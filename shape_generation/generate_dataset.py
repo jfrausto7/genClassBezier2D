@@ -1,54 +1,106 @@
 import os
-import random
 import shutil
 from   datetime import datetime
-from generate_random_shape import generate
 import progress.bar
+from random import choice
+from generate_random_shape import generate
+
 
 from shapes_utils import *
 from generate_random_shape import generate
 
 # Generate full dataset w/ parameters
-n_sampling_pts = 5
+LOW_PTS,MID_PTS,HIGH_PTS = 4, 12, 25
 n_shapes       = 50
 time           = datetime.now().strftime('%Y-%m-%d_%H_%M_%S')
 dataset_dir    = '../data/dataset_'+time+'/'
-img_dir        = dataset_dir+'images/'
-shapes_only_dir = dataset_dir+'shapes/'
+shapes_dir = dataset_dir+'shapes/'
 texts_dir = dataset_dir+'textures/'
 colors_dir = dataset_dir+'colors/'
-csv_dir        = 'csv/'
 filename       = 'shape'
+classes = ['low/', 'mid/', 'high/']
+textures = ['/', '|', '-', '+', 'x', 'o', 'O', '.', '*']
+colors = ['red', 'orange', 'yellow', 'green', 'blue', 'slategray', 'pink', 'cyan', 'magenta']
 
 # Create directories if necessary
-if not os.path.exists(shapes_only_dir):
-    os.makedirs(shapes_only_dir)
-    os.makedirs(shapes_only_dir+csv_dir)
+if not os.path.exists(shapes_dir):
+    for cls in classes:
+        os.makedirs(shapes_dir+cls)
 if not os.path.exists(texts_dir):
-    os.makedirs(texts_dir)
-    os.makedirs(texts_dir+csv_dir)
+    for cls in classes:
+        os.makedirs(texts_dir+cls)
 if not os.path.exists(colors_dir):
-    os.makedirs(colors_dir)
-    os.makedirs(colors_dir+csv_dir)
+    for cls in classes:
+        os.makedirs(colors_dir+cls)
 
-# Generate dataset
-bar = progress.bar.Bar('Generating shapes', max=n_shapes)
+# Generate dataset of just shapes
+bar = progress.bar.Bar('Generating shapes only', max=n_shapes * len(classes))
 for i in range(0,n_shapes):
+    for cls in classes:
 
-    generated = False
-    while (not generated):
-        n_pts  = random.randint(3, 7)
-        # radius = np.random.uniform(0.0, 1.0, size=n_pts)
-        # edgy   = np.random.uniform(0.0, 1.0, size=n_pts)
+        # class-specific params
+        if cls is 'low/':
+            n_pts = n_sampling_pts =  LOW_PTS
+        elif cls is 'mid/':
+            n_pts = n_sampling_pts =  MID_PTS
+        else:
+            n_pts = n_sampling_pts =  HIGH_PTS
 
-        generate(filename+'_'+str(i), n_pts, n_sampling_pts)
+        generate(filename+'_'+str(i), n_pts, n_sampling_pts, plot_pts=False)
         img  = filename+'_'+str(i)+'.png'    
         csv = filename+'_'+str(i)+'.csv'              
-        shutil.move(img,  img_dir)
-        shutil.move(csv, csv_dir)
-        generated = True
+        shutil.move(img,  shapes_dir+cls)
 
-    bar.next()
+        bar.next()
+
+# End bar
+bar.finish()
+
+# Generate dataset of shapes with random textures
+bar = progress.bar.Bar('Generating shapes with random textures', max=n_shapes * len(classes))
+for i in range(0,n_shapes):
+    for cls in classes:
+
+        # class-specific params
+        if cls is 'low/':
+            n_pts = n_sampling_pts =  LOW_PTS
+        elif cls is 'mid/':
+            n_pts = n_sampling_pts =  MID_PTS
+        else:
+            n_pts = n_sampling_pts =  HIGH_PTS
+
+        text = choice(textures)
+        generate(filename+'_'+str(i), n_pts, n_sampling_pts, hatch=text, plot_pts=False)
+        img  = filename+'_'+str(i)+'.png'    
+        csv = filename+'_'+str(i)+'.csv'              
+        shutil.move(img,  texts_dir+cls)
+
+        bar.next()
+
+# End bar
+bar.finish()
+
+# Generate dataset of shapes with random textures and random colors
+bar = progress.bar.Bar('Generating shapes with random textures and random colors', max=n_shapes * len(classes))
+for i in range(0,n_shapes):
+    for cls in classes:
+
+        # class-specific params
+        if cls is 'low/':
+            n_pts = n_sampling_pts =  LOW_PTS
+        elif cls is 'mid/':
+            n_pts = n_sampling_pts =  MID_PTS
+        else:
+            n_pts = n_sampling_pts =  HIGH_PTS
+
+        text = choice(textures)
+        clr = choice(colors)
+        generate(filename+'_'+str(i), n_pts, n_sampling_pts, hatch=text, fillColor=clr, plot_pts=False)
+        img  = filename+'_'+str(i)+'.png'    
+        csv = filename+'_'+str(i)+'.csv'              
+        shutil.move(img,  colors_dir+cls)
+
+        bar.next()
 
 # End bar
 bar.finish()
