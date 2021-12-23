@@ -28,4 +28,4 @@ def generate(filename, n_pts, n_sampling_pts, radius=0.5, edgy=1.0, fillColor='r
 
   return shape.name
 
-generate('shape', 5, 50)
+# generate('shape', 5, 50)
