@@ -23,31 +23,10 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-      '--predict',
-      help='Make a prediction on GeoGuessr images',
-      action='store_true',
-      dest='predict'
-    )
-
-    parser.add_argument(
         '--reset-data',
         help='Delete the scraped dataset images',
         action='store_true',
         dest='reset'
-    )
-
-    parser.add_argument(
-        '--plot',
-        help='Plot the accuracies/losses of previous model',
-        action='store_true',
-        dest='plot'
-    )
-
-    parser.add_argument(
-    '--game',
-    default='',
-    help='Link for the GeoGuessr game to make a prediction on',
-    dest='game'
     )
 
     parser.add_argument(
