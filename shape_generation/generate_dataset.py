@@ -12,16 +12,24 @@ from generate_random_shape import generate
 n_sampling_pts = 5
 n_shapes       = 50
 time           = datetime.now().strftime('%Y-%m-%d_%H_%M_%S')
-dataset_dir    = 'dataset_'+time+'/'
+dataset_dir    = '../data/dataset_'+time+'/'
 img_dir        = dataset_dir+'images/'
-csv_dir        = dataset_dir+'csv/'
+shapes_only_dir = dataset_dir+'shapes/'
+texts_dir = dataset_dir+'textures/'
+colors_dir = dataset_dir+'colors/'
+csv_dir        = 'csv/'
 filename       = 'shape'
 
 # Create directories if necessary
-if not os.path.exists(img_dir):
-    os.makedirs(img_dir)
-if not os.path.exists(csv_dir):
-    os.makedirs(csv_dir)
+if not os.path.exists(shapes_only_dir):
+    os.makedirs(shapes_only_dir)
+    os.makedirs(shapes_only_dir+csv_dir)
+if not os.path.exists(texts_dir):
+    os.makedirs(texts_dir)
+    os.makedirs(texts_dir+csv_dir)
+if not os.path.exists(colors_dir):
+    os.makedirs(colors_dir)
+    os.makedirs(colors_dir+csv_dir)
 
 # Generate dataset
 bar = progress.bar.Bar('Generating shapes', max=n_shapes)
