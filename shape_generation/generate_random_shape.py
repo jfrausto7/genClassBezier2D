@@ -1,4 +1,4 @@
-from shapes_utils import *
+from shape_generation.shapes_utils import *
 
 # constraints
 magnify        = 1.5
