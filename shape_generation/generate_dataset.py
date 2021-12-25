@@ -37,9 +37,9 @@ def generate_dataset():
         for cls in classes:
 
             # class-specific params
-            if cls is 'low/':
+            if cls == 'low/':
                 n_pts = n_sampling_pts =  LOW_PTS
-            elif cls is 'mid/':
+            elif cls == 'mid/':
                 n_pts = n_sampling_pts =  MID_PTS
             else:
                 n_pts = n_sampling_pts =  HIGH_PTS
@@ -58,9 +58,9 @@ def generate_dataset():
         for cls in classes:
 
             # class-specific params
-            if cls is 'low/':
+            if cls == 'low/':
                 n_pts = n_sampling_pts =  LOW_PTS
-            elif cls is 'mid/':
+            elif cls == 'mid/':
                 n_pts = n_sampling_pts =  MID_PTS
             else:
                 n_pts = n_sampling_pts =  HIGH_PTS
@@ -80,9 +80,9 @@ def generate_dataset():
         for cls in classes:
 
             # class-specific params
-            if cls is 'low/':
+            if cls == 'low/':
                 n_pts = n_sampling_pts =  LOW_PTS
-            elif cls is 'mid/':
+            elif cls == 'mid/':
                 n_pts = n_sampling_pts =  MID_PTS
             else:
                 n_pts = n_sampling_pts =  HIGH_PTS

@@ -3,8 +3,10 @@ import argparse
 import tensorflow as tf
 tf.get_logger().setLevel('ERROR')   # errors only
 import glob
+import matplotlib.pyplot as plt
 
 from shape_generation.generate_dataset import generate_dataset
+from preprocess import preprocess
 
 
 def parse_args() -> argparse.Namespace:
@@ -68,7 +70,9 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 def load_dataset(path_to_dataset, subset=None, valid_split=None):
-    if subset:
+    if subset is "training":
+        valid_split = 0.2
+    else:
         valid_split = 0.1
 
     dataset = tf.keras.preprocessing.image_dataset_from_directory(
@@ -82,10 +86,27 @@ def load_dataset(path_to_dataset, subset=None, valid_split=None):
     validation_split=valid_split,
     subset=subset,
     interpolation="bilinear",
-    crop_to_aspect_ratio=True,
+    crop_to_aspect_ratio=True
     )
 
     return dataset
+
+def create_datasets(dir):
+    train, valid, test = load_dataset(dir, subset = "training"), load_dataset(dir,subset = "validation"), load_dataset(dir, subset='validation')
+    return train, valid, test
+
+def augment_dataset(dataset):
+    for image_batch, label_batch in dataset:
+        image_batch = tf.map_fn(preprocess, image_batch)
+        dataset = tf.data.Dataset.from_tensors((image_batch,label_batch))
+    return dataset
+
+def print_dataset(dataset):
+    for i, l in dataset:
+        for img in range(i.shape[0]):
+            plt.imshow(i[img])
+            plt.show()
+
 
 def assert_class_num_equiv(training_ds, validation_ds, test_ds):
     # ensure that these datasets have same class number
@@ -101,68 +122,37 @@ def get_latest_dataset():
     assert(len(os.listdir(main_dir)) > 1), "No dataset generated!"
     latest = max(glob.glob(os.path.join(main_dir, '*/')), key=os.path.getmtime)
     return latest + 'shapes/', latest + 'textures/', latest + 'colors/'
-
+    
 
 def main(args: argparse.Namespace) -> None:
 
     if args.generate:
-        # TODO: call generate file
         shapes_dir, textures_dir, colors_dir = generate_dataset()
     else:
         shapes_dir, textures_dir, colors_dir = get_latest_dataset()
 
-    
-    # load respective datasets
+    ## load respective datasets
 
     # shapes only
-    shape_training_ds = load_dataset(
-    shapes_dir,
-    subset = "training"
-    )
-    shape_validation_ds = load_dataset(
-    shapes_dir,
-    subset = "validation"
-    )
-    shape_test_ds = load_dataset(
-    shapes_dir
-    )
-
-    # ensure that these datasets have same class number
-    assert_class_num_equiv(shape_training_ds, shape_validation_ds, shape_test_ds)
+    shape_train_ds, shape_valid_ds, shape_test_ds = create_datasets(shapes_dir)
+    assert_class_num_equiv(shape_train_ds, shape_valid_ds, shape_test_ds)   # ensure that these datasets have same class number
 
     # shapes w/ textures
-    texture_training_ds = load_dataset(
-    textures_dir,
-    subset = "training"
-    )
-    texture_validation_ds = load_dataset(
-    textures_dir,
-    subset = "validation"
-    )
-    texture_test_ds = load_dataset(
-    textures_dir
-    )
-
-    # ensure that these datasets have same class number
-    assert_class_num_equiv(texture_training_ds, texture_validation_ds, texture_test_ds)
+    texture_train_ds, texture_valid_ds, texture_test_ds = create_datasets(textures_dir)
+    assert_class_num_equiv(texture_train_ds, texture_valid_ds, texture_test_ds) # ensure that these datasets have same class number
 
     # shapes w/ textures & colors
-    color_training_ds = load_dataset(
-    colors_dir,
-    subset = "training"
-    )
-    color_validation_ds = load_dataset(
-    colors_dir,
-    subset = "validation"
-    )
-    color_test_ds = load_dataset(
-    colors_dir
-    )
+    color_train_ds, color_valid_ds, color_test_ds = create_datasets(colors_dir)
+    assert_class_num_equiv(color_train_ds, color_valid_ds, color_test_ds)   # ensure that these datasets have same class number
 
-    # ensure that these datasets have same class number
-    assert_class_num_equiv(color_training_ds, color_validation_ds, color_test_ds)
+    # augment data with cv2
+    shape_train_ds, shape_valid_ds, shape_test_ds = augment_dataset(shape_train_ds), augment_dataset(shape_valid_ds), augment_dataset(shape_test_ds)
+    texture_train_ds, texture_valid_ds, texture_test_ds = augment_dataset(texture_train_ds), augment_dataset(texture_valid_ds), augment_dataset(texture_test_ds)
+    color_train_ds, color_valid_ds, color_test_ds = augment_dataset(color_train_ds), augment_dataset(color_valid_ds), augment_dataset(color_test_ds)
 
+    # print_dataset(shape_train_ds)
 
+    # TODO: instantiate model! test validate and train
 
 if __name__ == "__main__":
   args = parse_args()
