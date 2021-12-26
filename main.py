@@ -1,6 +1,7 @@
 import os
 import argparse
 import tensorflow as tf
+import cv2
 
 from models.model import BezierModel
 tf.get_logger().setLevel('ERROR')   # errors only
@@ -9,7 +10,8 @@ import matplotlib.pyplot as plt
 from statistics import mean
 
 from shape_generation.generate_dataset import generate_dataset
-from preprocess import preprocess
+from preprocess import preprocess, preprocess_with_hed
+from hed import CropLayer
 
 def parse_args() -> argparse.Namespace:
     """Parse arguments from command line into ARGS."""
@@ -48,10 +50,10 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-    '--weights',
-    default='',
-    help='Path for the weights to use in training/testing',
-    dest='weights'
+        '--weights',
+        default='',
+        help='Path for the weights to use in training/testing',
+        dest='weights'
     )
 
     parser.add_argument(
@@ -60,6 +62,13 @@ def parse_args() -> argparse.Namespace:
         type=int,
         help='Number of training epochs',
         dest='epochs'
+    )
+
+    parser.add_argument(
+        '--hed',
+        help='Utilize holistically-nested edge detection over normal data augmentation',
+        action='store_true',
+        dest='hed'
     )
 
     return parser.parse_args()
@@ -92,8 +101,13 @@ def create_datasets(dir):
 
 def augment_dataset(dataset):
     for image_batch, label_batch in dataset:
-        image_batch = tf.map_fn(preprocess, image_batch)
-        dataset = tf.data.Dataset.from_tensor_slices((image_batch,label_batch))
+        if args.hed:
+            print("Performing holistically-nested edge detection...")
+            image_batch = tf.map_fn(preprocess_with_hed, image_batch)
+            dataset = tf.data.Dataset.from_tensor_slices((image_batch,label_batch))
+        else:
+            image_batch = tf.map_fn(preprocess, image_batch)
+            dataset = tf.data.Dataset.from_tensor_slices((image_batch,label_batch))
     return dataset
 
 def print_dataset(dataset):
@@ -179,6 +193,10 @@ def main(args: argparse.Namespace) -> None:
     else:
         shapes_dir, textures_dir, colors_dir = get_latest_dataset()
 
+    if args.hed:
+        # register our new layer with the CropLayer model (for HED)
+        cv2.dnn_registerLayer("Crop", CropLayer)
+
     ## load respective datasets
 
     if args.dataset == 'shapes':
@@ -206,7 +224,7 @@ def main(args: argparse.Namespace) -> None:
         print("Dataset specified is invalid.")
         return
 
-    # print_dataset(train_ds)
+    print_dataset(train_ds)
 
     #instantiate model
     bezierModel = BezierModel()

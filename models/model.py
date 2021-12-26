@@ -18,7 +18,7 @@ class BezierModel:
     self.model = tf.keras.Sequential() # start of model
     optimizerForModel = tf.keras.optimizers.Adam(LEARNING_RATE)
 
-    # TODO: utilize resnet/vgg16
+    # TODO: utilize resnet/vgg16..?
 
     # First block
     self.model.add(Conv2D(32, 2, 1, activation='relu', padding='same', input_shape=(256,256,3)))
