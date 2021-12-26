@@ -101,7 +101,6 @@ def print_dataset(dataset):
         plt.imshow(img)
         plt.show()
 
-
 def assert_class_num_equiv(training_ds, validation_ds, test_ds):
     # ensure that these datasets have same class number
     equivalence_check = training_ds.class_names == validation_ds.class_names == test_ds.class_names
@@ -186,21 +185,21 @@ def main(args: argparse.Namespace) -> None:
         # shapes only
         shape_train_ds, shape_valid_ds, shape_test_ds = create_datasets(shapes_dir)
         assert_class_num_equiv(shape_train_ds, shape_valid_ds, shape_test_ds)   # ensure that these datasets have same class number
-        # augment data with cv2
+        # data augmentation with cv2
         train_ds, val_ds, test_ds = augment_dataset(shape_train_ds), augment_dataset(shape_valid_ds), augment_dataset(shape_test_ds)
 
     elif args.dataset == 'textures':
         # shapes w/ textures
         texture_train_ds, texture_valid_ds, texture_test_ds = create_datasets(textures_dir)
         assert_class_num_equiv(texture_train_ds, texture_valid_ds, texture_test_ds) # ensure that these datasets have same class number
-        # augment data with cv2
+        # data augmentation with cv2
         train_ds, val_ds, test_ds = augment_dataset(texture_train_ds), augment_dataset(texture_valid_ds), augment_dataset(texture_test_ds)
 
     elif args.dataset == 'colors':
         # shapes w/ textures & colors
         color_train_ds, color_valid_ds, color_test_ds = create_datasets(colors_dir)
         assert_class_num_equiv(color_train_ds, color_valid_ds, color_test_ds)   # ensure that these datasets have same class number
-        # augment data with cv2
+        # data augmentation with cv2
         train_ds, val_ds, test_ds = augment_dataset(color_train_ds), augment_dataset(color_valid_ds), augment_dataset(color_test_ds)
     
     else:
