@@ -44,8 +44,8 @@ class BezierModel:
   
   def train(self, test_dataset, valid_dataset, epochs, ckpt_callback, tb_callback):
     """ Train the model on input images with their corresponding shape labels """
-    test_dataset.batch(BATCH_SIZE).prefetch(buffer_size=AUTOTUNE).cache()
-    valid_dataset.batch(BATCH_SIZE).prefetch(buffer_size=AUTOTUNE).cache()
+    test_dataset = test_dataset.cache().batch(BATCH_SIZE).prefetch(buffer_size=AUTOTUNE)
+    valid_dataset = valid_dataset.cache().batch(BATCH_SIZE).prefetch(buffer_size=AUTOTUNE)
     train_result = self.model.fit(test_dataset, validation_data=valid_dataset, epochs=epochs, callbacks=[ckpt_callback, tb_callback])
     idx = np.argmax(train_result.history['categorical_accuracy'],axis=0)
     accuracy = train_result.history['categorical_accuracy'][idx]
@@ -54,7 +54,7 @@ class BezierModel:
 
   def test(self, dataset):
     """ Test the model on unseen input images with their corresponding shape labels """
-    dataset.batch(BATCH_SIZE).prefetch(buffer_size=AUTOTUNE).cache()
+    dataset = dataset.cache().batch(BATCH_SIZE).prefetch(buffer_size=AUTOTUNE)
     valid_result = self.model.evaluate(dataset)
     accuracy = valid_result[1]
     loss = valid_result[0]

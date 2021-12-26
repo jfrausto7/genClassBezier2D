@@ -93,14 +93,13 @@ def create_datasets(dir):
 def augment_dataset(dataset):
     for image_batch, label_batch in dataset:
         image_batch = tf.map_fn(preprocess, image_batch)
-        dataset = tf.data.Dataset.from_tensors((image_batch,label_batch))
+        dataset = tf.data.Dataset.from_tensor_slices((image_batch,label_batch))
     return dataset
 
 def print_dataset(dataset):
-    for i, l in dataset:
-        for img in range(i.shape[0]):
-            plt.imshow(i[img])
-            plt.show()
+    for img, lbl in dataset:
+        plt.imshow(img)
+        plt.show()
 
 
 def assert_class_num_equiv(training_ds, validation_ds, test_ds):
@@ -207,6 +206,8 @@ def main(args: argparse.Namespace) -> None:
     else:
         print("Dataset specified is invalid.")
         return
+
+    # print_dataset(train_ds)
 
     #instantiate model
     bezierModel = BezierModel()
