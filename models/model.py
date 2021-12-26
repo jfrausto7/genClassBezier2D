@@ -2,13 +2,13 @@ import tensorflow as tf
 from tensorflow.keras.layers import \
     Conv2D, MaxPool2D, Dropout, Flatten, Dense, GlobalMaxPool2D
 import numpy as np
-from typing import Counter
 
-#TODO: set up hyperparams
+# hyperparams
 NUM_OUTPUTS = 3
 LEARNING_RATE = 0.01
 LOSS_FUNCTION = tf.keras.losses.CategoricalCrossentropy()
 BATCH_SIZE = 32
+AUTOTUNE = tf.data.experimental.AUTOTUNE
 
 class BezierModel:
   """ The main model that we plan to train and test for guessing shapes """
@@ -37,35 +37,25 @@ class BezierModel:
     self.model.add(Dropout(0.4))
     self.model.add(Dense(NUM_OUTPUTS, activation='softmax'))
 
-    self.model.compile(loss=tf.keras.losses.categorical_crossentropy, optimizer=optimizerForModel, metrics=['categorical_accuracy'])
+    self.model.compile(loss=self.loss, optimizer=optimizerForModel, metrics=['categorical_accuracy'])
 
     # show summary of model architecture
     self.model.summary()
   
-  def train(self, dataset, epochs, ckpt_callback, tb_callback):
-    """ TODO: Train the model on input images with their corresponding shape labels """
-    train_result = self.model.fit(dataset, epochs=epochs, callbacks=[ckpt_callback, tb_callback])
-    accuracy = train_result.history['categorical_accuracy'][-1]
-    loss = train_result.history['loss'][-1]
-    return accuracy, loss
-
-  def validate(self, dataset):
-    """ TODO: Validate the model on unseen input images with their corresponding shape labels """
-    valid_result = self.model.evaluate(dataset)
-    accuracy = valid_result.history['categorical_accuracy'][-1]
-    loss = valid_result.history['loss'][-1]
+  def train(self, test_dataset, valid_dataset, epochs, ckpt_callback, tb_callback):
+    """ Train the model on input images with their corresponding shape labels """
+    test_dataset.batch(BATCH_SIZE).prefetch(buffer_size=AUTOTUNE).cache()
+    valid_dataset.batch(BATCH_SIZE).prefetch(buffer_size=AUTOTUNE).cache()
+    train_result = self.model.fit(test_dataset, validation_data=valid_dataset, epochs=epochs, callbacks=[ckpt_callback, tb_callback])
+    idx = np.argmax(train_result.history['categorical_accuracy'],axis=0)
+    accuracy = train_result.history['categorical_accuracy'][idx]
+    loss = train_result.history['loss'][idx]
     return accuracy, loss
 
   def test(self, dataset):
-    """ TODO: Test the model on unseen input images with their corresponding shape labels """
-    preds = self.model.predict(dataset)
-
-    # get the most occurring class
-    classes = []
-    for pred in preds:
-      classes.append(np.argmax(pred, axis=0))
-    counts = Counter(classes)
-    predictions = counts.most_common()
-    print(predictions)
-    prediction = counts.most_common()[0][0]
-    return prediction
+    """ Test the model on unseen input images with their corresponding shape labels """
+    dataset.batch(BATCH_SIZE).prefetch(buffer_size=AUTOTUNE).cache()
+    valid_result = self.model.evaluate(dataset)
+    accuracy = valid_result[1]
+    loss = valid_result[0]
+    return accuracy, loss

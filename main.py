@@ -1,13 +1,15 @@
 import os
 import argparse
 import tensorflow as tf
+
+from models.model import BezierModel
 tf.get_logger().setLevel('ERROR')   # errors only
 import glob
 import matplotlib.pyplot as plt
+from statistics import mean
 
 from shape_generation.generate_dataset import generate_dataset
 from preprocess import preprocess
-
 
 def parse_args() -> argparse.Namespace:
     """Parse arguments from command line into ARGS."""
@@ -32,24 +34,10 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        '--validate',
-        help='Validate',
-        action='store_true',
-        dest='validate'
-    )
-
-    parser.add_argument(
         '--generate',
         help='Generate dataset of abstract shapes from Bezier curves',
         action='store_true',
         dest='generate'
-    )
-
-    parser.add_argument(
-        '--reset-data',
-        help='Delete the scraped dataset images',
-        action='store_true',
-        dest='reset'
     )
 
     parser.add_argument(
@@ -122,6 +110,61 @@ def get_latest_dataset():
     assert(len(os.listdir(main_dir)) > 1), "No dataset generated!"
     latest = max(glob.glob(os.path.join(main_dir, '*/')), key=os.path.getmtime)
     return latest + 'shapes/', latest + 'textures/', latest + 'colors/'
+
+def train(model, tr_dataset, vl_dataset, epochs, weightPath):
+
+    print("Now training BezierModel")
+
+    # use checkpoint if specified 
+    if weightPath != '':
+        if(os.path.exists(os.path.join(weightPath, "saved_model.pb"))):
+            print("Loading old weights...")
+            model.model = tf.keras.models.load_model(weightPath)
+            print("Loaded old weights! Will continue training!")
+
+    checkpoint_path = "./checkpoints/"
+    if not os.path.exists(checkpoint_path):
+        os.makedirs(checkpoint_path, exist_ok=True)
+
+    # callback to save model weights
+    model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
+    filepath=checkpoint_path,
+    save_weights_only=False,
+    monitor='val_accuracy',
+    mode='max',
+    save_best_only=False,
+    save_freq='epoch'
+    )
+
+    tb_callback = tf.keras.callbacks.TensorBoard(
+    log_dir='logs', histogram_freq=0, write_graph=True,
+    write_images=False, write_steps_per_second=False, update_freq='epoch',
+    profile_batch=0, embeddings_freq=0, embeddings_metadata=None
+    )
+
+    # Train
+    acc, loss = model.train(tr_dataset, vl_dataset, epochs, model_checkpoint_callback, tb_callback)
+
+    print(f"Best Accuracy: {(100*acc):>0.1f}%, Loss: {loss:>8f} \n")
+
+    return model
+
+def test(model, dataset):
+
+    print("Now testing BezierModel")
+
+    accs,losses = [], []
+
+    for _ in range(10):
+        # Test
+        acc, loss = model.test(dataset)
+        accs.append(acc)
+        losses.append(loss)
+
+    avgAcc = mean(accs)
+    avgLoss = mean(losses)
+
+    print(f"Accuracy: {(100*avgAcc):>0.1f}%, Loss: {avgLoss:>8f} \n")
     
 
 def main(args: argparse.Namespace) -> None:
@@ -152,7 +195,19 @@ def main(args: argparse.Namespace) -> None:
 
     # print_dataset(shape_train_ds)
 
-    # TODO: instantiate model! test validate and train
+    #instantiate model
+    bezierModel = BezierModel()
+
+    if args.train:
+        # train the model
+        bezierModel = train(bezierModel, shape_train_ds, shape_valid_ds, args.epochs, args.weights)
+    
+    if args.test:
+        # test the model
+        test(bezierModel, shape_test_ds)
+
+    # TODO: other datasets!
+
 
 if __name__ == "__main__":
   args = parse_args()
