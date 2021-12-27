@@ -50,3 +50,7 @@ This application uses Open Source components. You can find the source code of th
 Project: bezier_shapes https://github.com/jviquerat/bezier_shapes
 Copyright (c) 2019 Jonathan Viquerat (marc@imadjine.com)
 License (MIT) https://github.com/jviquerat/bezier_shapes/blob/master/LICENSE
+
+Project: hed https://github.com/s9xie/hed
+Copyright (c) 2014, 2015, The Regents of the University of California (Regents)
+License https://github.com/s9xie/hed/blob/master/LICENSE
