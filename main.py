@@ -224,7 +224,7 @@ def main(args: argparse.Namespace) -> None:
         print("Dataset specified is invalid.")
         return
 
-    print_dataset(train_ds)
+    # print_dataset(train_ds)
 
     #instantiate model
     bezierModel = BezierModel()
