@@ -1,5 +1,5 @@
 # genClassBezier2D
- A short "starter project" with the goal of generating a small dataset of abstract 3D shapes and then training a model to classify them.
+A short "starter project" with the goal of generating a small 2D image dataset of abstract shapes (formed using Bezier curves) and then training a model to classify them.
 
 ## What and how?
 
