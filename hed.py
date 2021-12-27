@@ -10,9 +10,8 @@ class CropLayer(object):
         self.endY = 0
 
     def getMemoryShapes(self, inputs):
-        # the crop layer will receive two inputs -- we need to crop
-        # the first input blob to match the shape of the second one,
-        # keeping the batch size and number of channels
+        """ the crop layer will receive two inputs -- we need to crop the first input blob to match the shape of the second one, 
+        keeping the batch size and number of channels """
         (inputShape, targetShape) = (inputs[0], inputs[1])
         (batchSize, numChannels) = (inputShape[0], inputShape[1])
         (H, W) = (targetShape[2], targetShape[3])
@@ -23,18 +22,17 @@ class CropLayer(object):
         self.endX = self.startX + W
         self.endY = self.startY + H
 
-        # return the shape of the volume (we'll perform the actual
-        # crop during the forward pass)
+        # return the shape of the volume (we perform the actual crop during the forward pass)
         return [[batchSize, numChannels, H, W]]
 
     def forward(self, inputs):
-        # use the derviced (x, y)-coordinates to perform the crop
+        # use the derived (x, y)-coordinates to perform the crop
         return [inputs[0][:, :, self.startY:self.endY,
                                 self.startX:self.endX]]
 
 
 def detect_edges(img):
-  # load our serialized edge detector from disk
+  # load serialized edge detector from disk
   protoPath = "./models/hed_model/deploy.prototxt"
   modelPath = "./models/hed_model/hed_pretrained_bsds.caffemodel"
 
@@ -43,14 +41,12 @@ def detect_edges(img):
   image = img
   (H, W) = image.shape[:2]
 
-  # construct a blob out of the input image for the Holistically-Nested
-  # Edge Detector
+  # construct a blob out of the input image for the Holistically-Nested Edge Detector
   blob = cv2.dnn.blobFromImage(image, scalefactor=1.0, size=(W, H),
                               mean=(104.00698794, 116.66876762, 122.67891434),
                               swapRB=False, crop=False)
 
-  # set the blob as the input to the network and perform a forward pass
-  # to compute the edges
+  # set the blob as the input to the network and perform a forward pass to compute edges
   net.setInput(blob)
   hed = net.forward()
   hed = cv2.resize(hed[0, 0], (W, H))
