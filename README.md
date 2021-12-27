@@ -7,19 +7,35 @@ TODO
 
 ## How to run
 
-### To train
+
+### To generate datasets
 ```
-python3 main.py --train --epochs
+python3 main.py --generate
 ```
 
-### To test
+## To utilize Holistically-Nested Edge Detection data augmentation
+```
+python3 main.py --hed
+```
+
+### To train (on default dataset)
+```
+python3 main.py --train --epochs 50
+```
+
+### To train (on specific dataset)
+```
+python3 main.py --train --epochs 50 --dataset colors
+```
+
+### To test (on default dataset)
 ```
 python3 main.py --test --weights "./path/to/weights"
 ```
 
-### To predict on a round of GeoGuessr
+### To test (on specific dataset)
 ```
-python3 main.py --predict --weights "./path/to/weights" --game "www./geoguessr-link.com"
+python3 main.py --test --weights "./path/to/weights" --dataset colors
 ```
 
 
