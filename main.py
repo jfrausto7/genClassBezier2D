@@ -108,6 +108,9 @@ def augment_dataset(dataset):
         else:
             image_batch = tf.map_fn(preprocess, image_batch)
             dataset = tf.data.Dataset.from_tensor_slices((image_batch,label_batch))
+            print(image_batch.shape)
+            print(label_batch.shape)
+            print(dataset)
     return dataset
 
 def print_dataset(dataset):
