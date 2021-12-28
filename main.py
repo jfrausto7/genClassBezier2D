@@ -1,5 +1,6 @@
 import os
 import argparse
+from matplotlib import image
 import tensorflow as tf
 from tensorflow._api.v2 import data
 import cv2
@@ -112,17 +113,12 @@ def augment_dataset(dataset):
             image_batch = tf.map_fn(preprocess, image_batch)
             image_tensors.append(image_batch)
             label_tensors.append(label_batch)
-    try:
-        image_tensors = tf.stack(image_tensors, axis=-1)
-    except:
-        image_tensors.pop() # drop last batch if not fitting
-        image_tensors = tf.stack(image_tensors, axis=-1)
-    
-    try:
-        label_tensors = tf.stack(label_tensors, axis=-1)
-    except:
-        label_tensors.pop() # drop last batch if not fitting
-        label_tensors = tf.stack(label_tensors, axis=-1)
+
+    image_tensors = tf.concat(image_tensors, axis=0)
+    label_tensors = tf.concat(label_tensors, axis=0)
+    image_tensors = tf.expand_dims(image_tensors, axis=-1)
+    label_tensors = tf.expand_dims(label_tensors, axis=-1)
+
     dataset = tf.data.Dataset.from_tensor_slices((image_tensors,label_tensors))
     return dataset
 
