@@ -85,7 +85,7 @@ def load_dataset(path_to_dataset, subset=None, valid_split=None):
     path_to_dataset,
     labels="inferred",
     label_mode="categorical",
-    batch_size=64,
+    batch_size=32,
     image_size=(256, 256),
     shuffle=True,
     seed=123,
