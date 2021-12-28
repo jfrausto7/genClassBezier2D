@@ -126,8 +126,7 @@ def assert_class_num_equiv(training_ds, validation_ds, test_ds):
 
 def get_latest_dataset():
     main_dir = './data'
-    print(len(os.listdir(main_dir)))
-    assert(len(os.listdir(main_dir)) > 1), "No dataset generated!"
+    assert(len(os.listdir(main_dir)) > 0), "No dataset generated!"
     latest = max(glob.glob(os.path.join(main_dir, '*/')), key=os.path.getmtime)
     return latest + 'shapes/', latest + 'textures/', latest + 'colors/'
 
