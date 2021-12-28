@@ -21,7 +21,7 @@ class BezierModel:
     # TODO: utilize resnet/vgg16..?
 
     # First block
-    self.model.add(Conv2D(32, 2, 1, activation='relu', padding='same', input_shape=(256,256,3)))
+    self.model.add(Conv2D(32, 2, 1, activation='relu', padding='same', input_shape=(256,256,1)))
     self.model.add(MaxPool2D(pool_size=(2,2), strides=2))
     self.model.add(Dropout(0.4))
 
