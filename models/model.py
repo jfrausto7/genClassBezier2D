@@ -5,7 +5,7 @@ import numpy as np
 
 # hyperparams
 NUM_OUTPUTS = 3
-LEARNING_RATE = 1e-3
+LEARNING_RATE = 1e-5
 LOSS_FUNCTION = tf.keras.losses.categorical_crossentropy
 BATCH_SIZE = 32
 AUTOTUNE = tf.data.experimental.AUTOTUNE
