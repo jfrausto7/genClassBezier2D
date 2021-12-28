@@ -85,7 +85,7 @@ def load_dataset(path_to_dataset, subset=None, valid_split=None):
     path_to_dataset,
     labels="inferred",
     label_mode="categorical",
-    batch_size=32,
+    batch_size=64,
     image_size=(256, 256),
     shuffle=True,
     seed=123,
@@ -181,9 +181,16 @@ def train(model, tr_dataset, vl_dataset, epochs, weightPath):
 
     return model
 
-def test(model, dataset):
+def test(model, dataset, weightPath):
 
     print("Now testing BezierModel")
+
+    # use checkpoint if specified 
+    if weightPath != '':
+        if(os.path.exists(os.path.join(weightPath, "saved_model.pb"))):
+            print("Loading old weights...")
+            model.model = tf.keras.models.load_model(weightPath)
+            print("Loaded old weights! Will test on it!")
 
     accs,losses = [], []
 
@@ -248,7 +255,7 @@ def main(args: argparse.Namespace) -> None:
     
     if args.test:
         # test the model
-        test(bezierModel, test_ds)
+        test(bezierModel, test_ds, args.weights)
 
 if __name__ == "__main__":
   args = parse_args()

@@ -7,7 +7,7 @@ import numpy as np
 NUM_OUTPUTS = 3
 LEARNING_RATE = 1e-4
 LOSS_FUNCTION = tf.keras.losses.categorical_crossentropy
-BATCH_SIZE = 32
+BATCH_SIZE = 64
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 
 class BezierModel:
