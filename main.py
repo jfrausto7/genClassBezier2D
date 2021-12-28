@@ -1,6 +1,7 @@
 import os
 import argparse
 import tensorflow as tf
+from tensorflow._api.v2 import data
 import cv2
 
 from models.model import BezierModel
@@ -100,23 +101,27 @@ def create_datasets(dir):
     return train, valid, test
 
 def augment_dataset(dataset):
+    image_tensors, label_tensors = [], []
     for image_batch, label_batch in dataset:
         if args.hed:
             print("Performing holistically-nested edge detection...")
             image_batch = tf.map_fn(preprocess_with_hed, image_batch)
-            dataset = tf.data.Dataset.from_tensor_slices((image_batch,label_batch))
+            image_tensors.append(image_batch)
+            label_tensors.append(label_batch)
         else:
             image_batch = tf.map_fn(preprocess, image_batch)
-            dataset = tf.data.Dataset.from_tensor_slices((image_batch,label_batch))
-            print(image_batch.shape)
-            print(label_batch.shape)
-            print(dataset)
+            image_tensors.append(image_batch)
+            label_tensors.append(label_batch)
+    image_tensors = tf.stack(image_tensors, axis=-1)
+    label_tensors = tf.stack(label_tensors, axis=-1)
+    dataset = tf.data.Dataset.from_tensor_slices((image_tensors,label_tensors))
     return dataset
 
 def print_dataset(dataset):
     for img, lbl in dataset:
         plt.imshow(img)
         plt.show()
+        
 
 def assert_class_num_equiv(training_ds, validation_ds, test_ds):
     # ensure that these datasets have same class number
