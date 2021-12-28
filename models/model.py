@@ -21,22 +21,28 @@ class BezierModel:
     # TODO: utilize resnet/vgg16..?
 
     # First block
-    self.model.add(Conv2D(64, 5, 2, activation='relu', padding='same', input_shape=(256,256,1)))
+    self.model.add(Conv2D(32, 5, 2, activation='relu', padding='same', input_shape=(256,256,1)))
     self.model.add(MaxPool2D(pool_size=(2,2), strides=2))
     self.model.add(Dropout(0.4))
 
     # Second block
-    self.model.add(Conv2D(128, 5, 1, activation='relu', padding='valid'))
+    self.model.add(Conv2D(64, 5, 1, activation='relu', padding='valid'))
     self.model.add(MaxPool2D(pool_size=(2,2), strides=2))
     self.model.add(Dropout(0.4))
 
     # Third block
+    self.model.add(Conv2D(128, 5, 1, activation='relu', padding='valid'))
+    self.model.add(MaxPool2D(pool_size=(2,2), strides=2))
+    self.model.add(Dropout(0.4))
+
+    # Fourth block
     self.model.add(Conv2D(256, 5, 1, activation='relu', padding='valid'))
     self.model.add(MaxPool2D(pool_size=(2,2), strides=2))
     self.model.add(Dropout(0.4))
 
     # Final block
     self.model.add(GlobalMaxPool2D())
+    self.model.add(Dense(256, activation='relu'))
     self.model.add(Dropout(0.4))
     self.model.add(Flatten())
     self.model.add(Dense(NUM_OUTPUTS, activation='softmax'))

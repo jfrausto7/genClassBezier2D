@@ -8,7 +8,7 @@ from shape_generation.generate_random_shape import generate
 
 # Generate full dataset w/ parameters
 LOW_PTS,MID_PTS,HIGH_PTS = 4, 12, 25
-n_shapes       = 1250
+n_shapes       = 5000
 time           = datetime.now().strftime('%Y-%m-%d_%H_%M_%S')
 dataset_dir    = './data/dataset_'+time+'/'
 shapes_dir = dataset_dir+'shapes/'

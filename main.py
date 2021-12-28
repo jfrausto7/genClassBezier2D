@@ -101,7 +101,7 @@ def create_datasets(dir):
     train, valid, test = load_dataset(dir, subset = "training"), load_dataset(dir,subset = "validation"), load_dataset(dir, subset='validation')
     return train, valid, test
 
-def augment_dataset(dataset):
+def process_dataset(dataset):
     image_tensors, label_tensors = [], []
     for image_batch, label_batch in dataset:
         if args.hed:
@@ -217,21 +217,21 @@ def main(args: argparse.Namespace) -> None:
         shape_train_ds, shape_valid_ds, shape_test_ds = create_datasets(shapes_dir)
         assert_class_num_equiv(shape_train_ds, shape_valid_ds, shape_test_ds)   # ensure that these datasets have same class number
         # data augmentation with cv2
-        train_ds, val_ds, test_ds = augment_dataset(shape_train_ds), augment_dataset(shape_valid_ds), augment_dataset(shape_test_ds)
+        train_ds, val_ds, test_ds = process_dataset(shape_train_ds), process_dataset(shape_valid_ds), process_dataset(shape_test_ds)
 
     elif args.dataset == 'textures':
         # shapes w/ textures
         texture_train_ds, texture_valid_ds, texture_test_ds = create_datasets(textures_dir)
         assert_class_num_equiv(texture_train_ds, texture_valid_ds, texture_test_ds) # ensure that these datasets have same class number
         # data augmentation with cv2
-        train_ds, val_ds, test_ds = augment_dataset(texture_train_ds), augment_dataset(texture_valid_ds), augment_dataset(texture_test_ds)
+        train_ds, val_ds, test_ds = process_dataset(texture_train_ds), process_dataset(texture_valid_ds), process_dataset(texture_test_ds)
 
     elif args.dataset == 'colors':
         # shapes w/ textures & colors
         color_train_ds, color_valid_ds, color_test_ds = create_datasets(colors_dir)
         assert_class_num_equiv(color_train_ds, color_valid_ds, color_test_ds)   # ensure that these datasets have same class number
         # data augmentation with cv2
-        train_ds, val_ds, test_ds = augment_dataset(color_train_ds), augment_dataset(color_valid_ds), augment_dataset(color_test_ds)
+        train_ds, val_ds, test_ds = process_dataset(color_train_ds), process_dataset(color_valid_ds), process_dataset(color_test_ds)
     
     else:
         print("Dataset specified is invalid.")
