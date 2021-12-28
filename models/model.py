@@ -35,9 +35,14 @@ class BezierModel:
     self.model.add(MaxPool2D(pool_size=(2,2), strides=2))
     self.model.add(Dropout(0.4))
 
+    # Fourth block
+    self.model.add(Conv2D(256, 5, 1, activation='relu', padding='valid'))
+    self.model.add(MaxPool2D(pool_size=(2,2), strides=2))
+    self.model.add(Dropout(0.4))
+
     # Final block
     self.model.add(GlobalMaxPool2D())
-    self.model.add(Dense(128, activation='relu'))
+    self.model.add(Dense(256, activation='relu'))
     self.model.add(Dropout(0.4))
     self.model.add(Flatten())
     self.model.add(Dense(NUM_OUTPUTS, activation='softmax'))
