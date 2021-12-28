@@ -112,8 +112,17 @@ def augment_dataset(dataset):
             image_batch = tf.map_fn(preprocess, image_batch)
             image_tensors.append(image_batch)
             label_tensors.append(label_batch)
-    image_tensors = tf.stack(image_tensors, axis=-1)
-    label_tensors = tf.stack(label_tensors, axis=-1)
+    try:
+        image_tensors = tf.stack(image_tensors, axis=-1)
+    except:
+        image_tensors.pop() # drop last batch if not fitting
+        image_tensors = tf.stack(image_tensors, axis=-1)
+    
+    try:
+        label_tensors = tf.stack(label_tensors, axis=-1)
+    except:
+        label_tensors.pop() # drop last batch if not fitting
+        label_tensors = tf.stack(label_tensors, axis=-1)
     dataset = tf.data.Dataset.from_tensor_slices((image_tensors,label_tensors))
     return dataset
 
