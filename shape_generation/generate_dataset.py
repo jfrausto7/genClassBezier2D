@@ -99,22 +99,20 @@ def generate_dataset():
 
     return shapes_dir, texts_dir, colors_dir
 
-def generate_specific(specific_dir):
+def generate_specific(specific_dir, n):
 
     dataset_dir = specific_dir
     colors_dir = dataset_dir+'colors/'
 
     # Generate dataset of shapes with random textures and random colors
     bar = progress.bar.Bar('Generating shapes with random textures and random colors', max=n_shapes * len(classes))
-    for i in range(0,n_shapes):
+    for i in range(3500,n_shapes):
         for cls in classes:
 
             # class-specific params
             if cls == 'low/':
-                continue
+                n_pts = n_sampling_pts =  LOW_PTS
             elif cls == 'mid/':
-                if i < 4704:
-                    continue
                 n_pts = n_sampling_pts =  MID_PTS
             else:
                 n_pts = n_sampling_pts =  HIGH_PTS
