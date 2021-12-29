@@ -98,31 +98,3 @@ def generate_dataset():
     bar.finish()
 
     return shapes_dir, texts_dir, colors_dir
-
-def generate_specific(specific_dir):
-
-    dataset_dir = specific_dir
-    colors_dir = dataset_dir+'colors/'
-
-    # Generate dataset of shapes with random textures and random colors
-    bar = progress.bar.Bar('Generating shapes with random textures and random colors', max=n_shapes * len(classes))
-    for i in range(3500,n_shapes):
-        for cls in classes:
-
-            # class-specific params
-            if cls == 'low/':
-                n_pts = n_sampling_pts =  LOW_PTS
-            elif cls == 'mid/':
-                n_pts = n_sampling_pts =  MID_PTS
-            else:
-                n_pts = n_sampling_pts =  HIGH_PTS
-
-            text = choice(textures)
-            clr = choice(colors)
-            generate(filename+'_'+str(i), n_pts, n_sampling_pts, hatch=text, fillColor=clr, plot_pts=False)
-            img  = filename+'_'+str(i)+'.png'              
-            shutil.move(img,  colors_dir+cls)
-            bar.next()
-
-    # End bar
-    bar.finish()

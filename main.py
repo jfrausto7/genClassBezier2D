@@ -1,6 +1,5 @@
 import os
 import argparse
-from types import TracebackType
 from matplotlib import image
 import tensorflow as tf
 from tensorflow._api.v2 import data
@@ -12,7 +11,7 @@ import glob
 import matplotlib.pyplot as plt
 from statistics import mean
 
-from shape_generation.generate_dataset import generate_dataset, generate_specific
+from shape_generation.generate_dataset import generate_dataset
 from preprocess import preprocess, preprocess_with_hed
 from hed import CropLayer
 
@@ -72,13 +71,6 @@ def parse_args() -> argparse.Namespace:
         help='Utilize holistically-nested edge detection over normal data augmentation',
         action='store_true',
         dest='hed'
-    )
-
-    parser.add_argument(
-        '--specific',
-        help='Special func',
-        default='',
-        dest='specific'
     )
 
     return parser.parse_args()
@@ -215,10 +207,6 @@ def test(model, dataset, weightPath):
     
 
 def main(args: argparse.Namespace) -> None:
-
-    if args.specific != '':
-        print("continuing")
-        generate_specific(args.specific)
 
     if args.generate:
         shapes_dir, textures_dir, colors_dir = generate_dataset()
