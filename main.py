@@ -218,7 +218,7 @@ def main(args: argparse.Namespace) -> None:
 
     if args.specific != '':
         print("continuing")
-        generate_specific(args.specific, 9704)
+        generate_specific(args.specific, 3235)
 
     if args.generate:
         shapes_dir, textures_dir, colors_dir = generate_dataset()
