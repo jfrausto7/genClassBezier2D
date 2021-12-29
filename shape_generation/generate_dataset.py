@@ -99,7 +99,7 @@ def generate_dataset():
 
     return shapes_dir, texts_dir, colors_dir
 
-def generate_specific(specific_dir, n):
+def generate_specific(specific_dir):
 
     dataset_dir = specific_dir
     colors_dir = dataset_dir+'colors/'
