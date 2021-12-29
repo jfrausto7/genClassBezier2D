@@ -77,7 +77,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         '--specific',
         help='Special func',
-        type=str,
         default='',
         dest='specific'
     )
@@ -218,6 +217,7 @@ def test(model, dataset, weightPath):
 def main(args: argparse.Namespace) -> None:
 
     if args.specific != '':
+        print("continuing")
         generate_specific(args.specific, 9704)
 
     if args.generate:
