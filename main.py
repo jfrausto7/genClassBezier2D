@@ -1,9 +1,8 @@
 import os
 import argparse
-from matplotlib import image
 import tensorflow as tf
-from tensorflow._api.v2 import data
 import cv2
+import progress.bar
 
 from models.model import BezierModel
 tf.get_logger().setLevel('ERROR')   # errors only
@@ -103,16 +102,21 @@ def create_datasets(dir):
 
 def process_dataset(dataset):
     image_tensors, label_tensors = [], []
+    if args.hed:
+        num_batches = tf.data.experimental.cardinality(dataset)
+        bar = progress.bar.Bar("Performing holistically-nested edge detection", num_batches)
     for image_batch, label_batch in dataset:
         if args.hed:
-            print("Performing holistically-nested edge detection...")
             image_batch = tf.map_fn(preprocess_with_hed, image_batch)
             image_tensors.append(image_batch)
             label_tensors.append(label_batch)
+            bar.next()
         else:
             image_batch = tf.map_fn(preprocess, image_batch)
             image_tensors.append(image_batch)
             label_tensors.append(label_batch)
+    if args.hed:
+        bar.finish()
 
     image_tensors = tf.concat(image_tensors, axis=0)
     label_tensors = tf.concat(label_tensors, axis=0)
