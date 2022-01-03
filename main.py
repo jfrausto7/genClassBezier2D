@@ -104,7 +104,7 @@ def process_dataset(dataset):
     image_tensors, label_tensors = [], []
     if args.hed:
         num_batches = tf.data.experimental.cardinality(dataset)
-        bar = progress.bar.Bar("Performing holistically-nested edge detection", num_batches)
+        bar = progress.bar.Bar("Performing holistically-nested edge detection", max=num_batches)
     for image_batch, label_batch in dataset:
         if args.hed:
             image_batch = tf.map_fn(preprocess_with_hed, image_batch)
