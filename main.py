@@ -3,6 +3,7 @@ import argparse
 import tensorflow as tf
 import cv2
 import progress.bar
+from keras.utils.vis_utils import plot_model
 
 from models.model import BezierModel
 tf.get_logger().setLevel('ERROR')   # errors only
@@ -70,6 +71,13 @@ def parse_args() -> argparse.Namespace:
         help='Utilize holistically-nested edge detection over normal data augmentation',
         action='store_true',
         dest='hed'
+    )
+
+    parser.add_argument(
+        '--visualize',
+        help='Save a visualization of model architecture',
+        action='store_true',
+        dest='viz'
     )
 
     return parser.parse_args()
@@ -252,6 +260,10 @@ def main(args: argparse.Namespace) -> None:
 
     #instantiate model
     bezierModel = BezierModel()
+
+    if args.viz:
+        # visualize model
+        plot_model(bezierModel.model, to_file="architecture.png", show_shapes=True, show_layer_names=True, expand_nested=True)
 
     if args.train:
         # train the model
