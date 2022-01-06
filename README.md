@@ -1,9 +1,9 @@
 # genClassBezier2D
 A short "starter project" with the goal of generating a small 2D image dataset of abstract shapes (formed using Bezier curves) and then training a model to classify them.
 
-## What and how?
+## What is this?
 
-TODO
+SEE writeup.pdf IN RESULTS DIRECTORY.
 
 ## How to run
 
