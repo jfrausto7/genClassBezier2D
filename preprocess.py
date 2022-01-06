@@ -15,7 +15,7 @@ def preprocess(image):
     img = filters(img)    # add Gaussian blur
     img = noisy(img)  # add Gaussian noise
     img = cv2.Canny(img, 100, 200)    # Canny edge detection
-    img = cv2.dilate(img,(7,7),iterations=3)  # dialate edges for detection
+    img = cv2.dilate(img,(7,7),iterations=3)  # dilate edges for detection
   
     # convert to tensor
     img = tf.convert_to_tensor(img, dtype=tf.float32)
