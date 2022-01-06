@@ -41,7 +41,18 @@ python3 main.py --test --weights "./path/to/weights" --dataset colors
 
 ## References
 
-[1] S. Xie and Z. Tu, “Holistically-nested edge detection,” 2015 IEEE International Conference on Computer Vision (ICCV), 2015. 
+[1] Habibollah Agh Atabay. “Binary shape classification using Convolutional Neu- ral Networks”. In: IIOAB Journal 7 (Oct. 2016), pp. 332–336.
+
+[2] John Canny. “A Computational Ap- proach to Edge Detection”. In: IEEE Transactions on Pattern Analysis and Machine Intelligence PAMI-8.6 (1986), pp. 679–698. DOI: 10.1109/TPAMI. 1986.4767851.
+
+[3] Jonathan Viquerat and Elie Hachem. “A supervised neural network for drag prediction of arbitrary 2D shapes in
+laminar flows at low Reynolds num-
+ber”. In: Computers Fluids 210 (2020),
+p. 104645. ISSN: 0045-7930. DOI: https: //doi.org/10.1016/j.compfluid. 2020.104645. URL: https:// www.sciencedirect.com/science/ article/pii/S0045793020302164.
+
+[4] S. Xie and Z. Tu, “Holistically-nested edge detection,” 2015 IEEE International Conference on Computer Vision (ICCV), 2015. 
+
+[5] Chaoyan Zhang et al. “SCN: A Novel Shape Classification Algorithm Based on Convolutional Neural Network”. In: Symmetry 13.3 (2021). ISSN: 2073- 8994. DOI: 10.3390/sym13030499. URL: https://www.mdpi.com/ 2073-8994/13/3/499.
 
 ### Credits 
 
